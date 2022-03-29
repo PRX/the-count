@@ -74,7 +74,7 @@ function getSessionId(event, userId) {
 function bakeCookie(cookieName, cookieValue, maxAge) {
   const configuredValue = [
     cookieValue,
-    // `Domain=${process.env.COOKIE_DOMAIN}`,
+    `Domain=${process.env.COOKIE_DOMAIN}`,
     `Max-Age=${maxAge}`,
     'Path=/',
     'Secure',
