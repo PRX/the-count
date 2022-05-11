@@ -52,7 +52,11 @@ function getUserId(event) {
   // Create a new user ID if there isn't one yet
   // The user ID is a hash of the IP and the current timestamp
   const msg = event.requestContext.http.sourceIp + new Date().getTime();
-  return new crypto.Hash('sha1').update(msg).digest('base64').substr(0, 27);
+  return crypto
+    .createHash('sha1')
+    .update(msg)
+    .digest('base64')
+    .substring(0, 27);
 }
 
 function getSessionId(event, userId) {
@@ -72,7 +76,11 @@ function getSessionId(event, userId) {
     new Date().getTime(),
     event.requestContext.http.sourceIp,
   ].join('');
-  return new crypto.Hash('sha1').update(msg).digest('base64').substr(0, 27);
+  return crypto
+    .createHash('sha1')
+    .update(msg)
+    .digest('base64')
+    .substring(0, 27);
 }
 
 function bakeCookie(cookieName, cookieValue, maxAge) {
