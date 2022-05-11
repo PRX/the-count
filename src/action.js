@@ -1,7 +1,7 @@
 const AWS = require('aws-sdk');
 const crypto = require('crypto');
 
-const kinesis = new AWS.Kinesis({ apiVersion: '2013-12-02'});
+const kinesis = new AWS.Kinesis({ apiVersion: '2013-12-02' });
 
 // Base64 1x1 transparent GIF
 const PIXEL = 'R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
@@ -16,7 +16,7 @@ const MAX_SESSION_LENGTH = 3600;
 
 // Convert an array to comma-separated list
 function formatToCSVLine(params) {
-  return `"${params.map(x => ('' + x).replace(/"/g, '""')).join('","')}"`;
+  return `"${params.map((x) => ('' + x).replace(/"/g, '""')).join('","')}"`;
 }
 
 function formatDate(date) {
@@ -41,22 +41,26 @@ function dataFromEvent(event, userId, sessionId) {
 
 function getUserId(event) {
   // Re-use an existing user ID if one exists
-  if (event?.cookies?.find(c => c.startsWith(`${USER_ID_COOKIE_NAME}=`))) {
-    const reqCookie = event.cookies.find(c => c.startsWith(`${USER_ID_COOKIE_NAME}=`));
+  if (event?.cookies?.find((c) => c.startsWith(`${USER_ID_COOKIE_NAME}=`))) {
+    const reqCookie = event.cookies.find((c) =>
+      c.startsWith(`${USER_ID_COOKIE_NAME}=`),
+    );
     const reqCookieValue = reqCookie.split('=', 2)[1];
     return reqCookieValue;
   }
 
   // Create a new user ID if there isn't one yet
   // The user ID is a hash of the IP and the current timestamp
-  const msg = event.requestContext.http.sourceIp + (new Date).getTime();
-  return (new crypto.Hash('sha1')).update(msg).digest('base64').substr(0, 27);
+  const msg = event.requestContext.http.sourceIp + new Date().getTime();
+  return new crypto.Hash('sha1').update(msg).digest('base64').substr(0, 27);
 }
 
 function getSessionId(event, userId) {
   // Re-use an existing session ID if one exists
-  if (event?.cookies?.find(c => c.startsWith(`${SESSION_COOKIE_NAME}=`))) {
-    const reqCookie = event.cookies.find(c => c.startsWith(`${SESSION_COOKIE_NAME}=`));
+  if (event?.cookies?.find((c) => c.startsWith(`${SESSION_COOKIE_NAME}=`))) {
+    const reqCookie = event.cookies.find((c) =>
+      c.startsWith(`${SESSION_COOKIE_NAME}=`),
+    );
     const reqCookieValue = reqCookie.split('=', 2)[1];
     return reqCookieValue;
   }
@@ -65,10 +69,10 @@ function getSessionId(event, userId) {
   // The session ID is a hash of the user ID, current timestamp, and IP
   const msg = [
     userId,
-    (new Date()).getTime(),
-    event.requestContext.http.sourceIp
+    new Date().getTime(),
+    event.requestContext.http.sourceIp,
   ].join('');
-  return (new crypto.Hash('sha1')).update(msg).digest('base64').substr(0, 27);
+  return new crypto.Hash('sha1').update(msg).digest('base64').substr(0, 27);
 }
 
 function bakeCookie(cookieName, cookieValue, maxAge) {
@@ -78,7 +82,7 @@ function bakeCookie(cookieName, cookieValue, maxAge) {
     `Max-Age=${maxAge}`,
     'Path=/',
     'Secure',
-    'HttpOnly'
+    'HttpOnly',
   ].join('; ');
 
   return [cookieName, configuredValue].join('=');
@@ -100,11 +104,13 @@ exports.handler = async (event) => {
   const logData = dataFromEvent(event, userId, sessionId);
   const logCsv = formatToCSVLine(logData);
 
-  await kinesis.putRecord({
-    StreamName: process.env.ACTION_LOG_STREAM_NAME,
-    PartitionKey: crypto.createHash('md5').update(logCsv).digest('hex'),
-    Data: logCsv,
-  }).promise();
+  await kinesis
+    .putRecord({
+      StreamName: process.env.ACTION_LOG_STREAM_NAME,
+      PartitionKey: crypto.createHash('md5').update(logCsv).digest('hex'),
+      Data: logCsv,
+    })
+    .promise();
 
   return {
     isBase64Encoded: true,
@@ -118,6 +124,6 @@ exports.handler = async (event) => {
       'content-type': 'image/gif',
       'cache-control': 'private, no-cache, proxy-revalidate',
       'content-length': '43',
-    }
+    },
   };
 };
