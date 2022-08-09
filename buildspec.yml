@@ -9,6 +9,8 @@ env:
   exported-variables:
     - PRX_LAMBDA_CODE_CONFIG_PARAMETERS
     - PRX_LAMBDA_CODE_CONFIG_VALUE
+    - PRX_SPIRE_S3_PKG_PARAMETERS
+    - LAMBDA_ZIP
 phases:
   pre_build:
     commands:
