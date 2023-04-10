@@ -10,17 +10,20 @@
     "url": "git://github.com/PRX/the-count.git"
   },
   "dependencies": {
-    "aws-sdk": "2.x"
+    "@aws-sdk/client-kinesis": "*"
   },
   "devDependencies": {
     "@types/aws-lambda": "*",
-    "@types/node": "*",
     "eslint": "*",
-    "eslint-config-airbnb-base": "*",
+    "eslint-config-airbnb": "*",
     "eslint-config-prettier": "*",
     "eslint-plugin-import": "*",
+    "eslint-plugin-jsx-a11y": "*",
     "eslint-plugin-prettier": "*",
+    "eslint-plugin-react": "*",
+    "eslint-plugin-react-hooks": "*",
     "prettier": "*",
-    "typescript": "*"
+    "typescript": "*",
+    "@types/node": "*"
   }
 }
