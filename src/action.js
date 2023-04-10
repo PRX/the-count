@@ -1,7 +1,7 @@
-const AWS = require("aws-sdk");
+const { Kinesis } = require("@aws-sdk/client-kinesis");
 const crypto = require("crypto");
 
-const kinesis = new AWS.Kinesis({ apiVersion: "2013-12-02" });
+const kinesis = new Kinesis({ apiVersion: "2013-12-02" });
 
 // Base64 1x1 transparent GIF
 const PIXEL = "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
@@ -112,13 +112,11 @@ exports.handler = async (event) => {
   const logData = dataFromEvent(event, userId, sessionId);
   const logCsv = formatToCSVLine(logData);
 
-  await kinesis
-    .putRecord({
-      StreamName: process.env.ACTION_LOG_STREAM_NAME,
-      PartitionKey: crypto.createHash("md5").update(logCsv).digest("hex"),
-      Data: logCsv,
-    })
-    .promise();
+  await kinesis.putRecord({
+    StreamName: process.env.ACTION_LOG_STREAM_NAME,
+    PartitionKey: crypto.createHash("md5").update(logCsv).digest("hex"),
+    Data: Buffer.from(logCsv),
+  });
 
   return {
     isBase64Encoded: true,
