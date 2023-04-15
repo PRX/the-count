@@ -100,7 +100,7 @@ exports.handler = async (event) => {
   console.log(JSON.stringify(event));
 
   if (event?.queryStringParameters?.persist === "false") {
-    return;
+    return undefined;
   }
 
   // Get or set long-term user ID
