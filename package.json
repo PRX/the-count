@@ -14,16 +14,15 @@
   },
   "devDependencies": {
     "@types/aws-lambda": "*",
+    "@types/node": "*",
     "eslint": "*",
-    "eslint-config-airbnb": "*",
+    "eslint-config-airbnb-base": "*",
     "eslint-config-prettier": "*",
     "eslint-plugin-import": "*",
-    "eslint-plugin-jsx-a11y": "*",
     "eslint-plugin-prettier": "*",
-    "eslint-plugin-react": "*",
-    "eslint-plugin-react-hooks": "*",
+    "jsdoc": "*",
     "prettier": "*",
     "typescript": "*",
-    "@types/node": "*"
+    "yarn": "*"
   }
 }
