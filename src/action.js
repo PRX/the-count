@@ -16,7 +16,7 @@ const MAX_SESSION_LENGTH = 3600;
 
 // Convert an array to comma-separated list
 function formatToCSVLine(params) {
-  return `"${params.map((x) => ("" + x).replace(/"/g, '""')).join('","')}"`;
+  return `"${params.map((x) => `${x}`.replace(/"/g, '""')).join('","')}"`;
 }
 
 function formatDate(date) {
