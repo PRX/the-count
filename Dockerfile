@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:20-alpine
 
 LABEL maintainer="PRX <sysadmin@prx.org>"
 LABEL org.prx.spire.publish.s3="LAMBDA_ZIP"
@@ -9,6 +9,7 @@ RUN apk add zip
 
 RUN mkdir --parents /.prxci
 
+ADD package.json .
 ADD src/action.js .
 ADD src/writer.js .
 

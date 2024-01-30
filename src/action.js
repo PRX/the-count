@@ -1,7 +1,7 @@
-const { Kinesis } = require("@aws-sdk/client-kinesis");
-const crypto = require("crypto");
+import { KinesisClient, PutRecordCommand } from "@aws-sdk/client-kinesis";
+import { createHash } from "node:crypto";
 
-const kinesis = new Kinesis({ apiVersion: "2013-12-02" });
+const kinesis = new KinesisClient({ apiVersion: "2013-12-02" });
 
 // Base64 1x1 transparent GIF
 const PIXEL = "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
@@ -52,11 +52,7 @@ function getUserId(event) {
   // Create a new user ID if there isn't one yet
   // The user ID is a hash of the IP and the current timestamp
   const msg = event.requestContext.http.sourceIp + new Date().getTime();
-  return crypto
-    .createHash("sha1")
-    .update(msg)
-    .digest("base64")
-    .substring(0, 27);
+  return createHash("sha1").update(msg).digest("base64").substring(0, 27);
 }
 
 function getSessionId(event, userId) {
@@ -76,11 +72,7 @@ function getSessionId(event, userId) {
     new Date().getTime(),
     event.requestContext.http.sourceIp,
   ].join("");
-  return crypto
-    .createHash("sha1")
-    .update(msg)
-    .digest("base64")
-    .substring(0, 27);
+  return createHash("sha1").update(msg).digest("base64").substring(0, 27);
 }
 
 function bakeCookie(cookieName, cookieValue, maxAge) {
@@ -96,7 +88,7 @@ function bakeCookie(cookieName, cookieValue, maxAge) {
   return [cookieName, configuredValue].join("=");
 }
 
-exports.handler = async (event) => {
+export const handler = async (event) => {
   console.log(JSON.stringify(event));
 
   if (event?.queryStringParameters?.persist === "false") {
@@ -112,11 +104,13 @@ exports.handler = async (event) => {
   const logData = dataFromEvent(event, userId, sessionId);
   const logCsv = formatToCSVLine(logData);
 
-  await kinesis.putRecord({
-    StreamName: process.env.ACTION_LOG_STREAM_NAME,
-    PartitionKey: crypto.createHash("md5").update(logCsv).digest("hex"),
-    Data: Buffer.from(logCsv),
-  });
+  await kinesis.send(
+    new PutRecordCommand({
+      StreamName: process.env.ACTION_LOG_STREAM_NAME,
+      PartitionKey: createHash("md5").update(logCsv).digest("hex"),
+      Data: Buffer.from(logCsv),
+    })
+  );
 
   return {
     isBase64Encoded: true,
