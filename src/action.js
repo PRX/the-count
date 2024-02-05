@@ -43,7 +43,7 @@ function getUserId(event) {
   // Re-use an existing user ID if one exists
   if (event?.cookies?.find((c) => c.startsWith(`${USER_ID_COOKIE_NAME}=`))) {
     const reqCookie = event.cookies.find((c) =>
-      c.startsWith(`${USER_ID_COOKIE_NAME}=`)
+      c.startsWith(`${USER_ID_COOKIE_NAME}=`),
     );
     const reqCookieValue = reqCookie.split("=", 2)[1];
     return reqCookieValue;
@@ -59,7 +59,7 @@ function getSessionId(event, userId) {
   // Re-use an existing session ID if one exists
   if (event?.cookies?.find((c) => c.startsWith(`${SESSION_COOKIE_NAME}=`))) {
     const reqCookie = event.cookies.find((c) =>
-      c.startsWith(`${SESSION_COOKIE_NAME}=`)
+      c.startsWith(`${SESSION_COOKIE_NAME}=`),
     );
     const reqCookieValue = reqCookie.split("=", 2)[1];
     return reqCookieValue;
@@ -109,7 +109,7 @@ export const handler = async (event) => {
       StreamName: process.env.ACTION_LOG_STREAM_NAME,
       PartitionKey: createHash("md5").update(logCsv).digest("hex"),
       Data: Buffer.from(logCsv),
-    })
+    }),
   );
 
   return {
