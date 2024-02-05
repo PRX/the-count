@@ -1,6 +1,6 @@
-const fs = require("fs");
+import { writeFileSync } from "node:fs";
 
-exports.handler = async (event, context) => {
+export const handler = async (event, context) => {
   console.log(JSON.stringify(event));
 
   const logLines = event?.Records?.map((r) =>
@@ -11,6 +11,6 @@ exports.handler = async (event, context) => {
     const filename = `actions-${+new Date()}-${context.awsRequestId}.log`;
     // This directory must match the LocalMountPath of the function's
     // configuration
-    fs.writeFileSync(`/mnt/count_files/${filename}`, logLines.join("\n"));
+    writeFileSync(`/mnt/count_files/${filename}`, logLines.join("\n"));
   }
 };
