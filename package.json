@@ -4,7 +4,7 @@
   "license": "AGPL-3.0",
   "private": true,
   "engines": {
-    "node": ">= 22.0.0"
+    "node": ">= 24.0.0"
   },
   "type": "module",
   "repository": {
@@ -15,15 +15,10 @@
     "@aws-sdk/client-kinesis": "*"
   },
   "devDependencies": {
+    "@biomejs/biome": "*",
     "@types/aws-lambda": "*",
     "@types/node": "*",
-    "eslint": "*",
-    "eslint-config-airbnb-base": "*",
-    "eslint-config-prettier": "*",
-    "eslint-plugin-import": "*",
-    "eslint-plugin-prettier": "*",
     "jsdoc": "*",
-    "prettier": "*",
     "typescript": "*",
     "yarn": "*"
   }
