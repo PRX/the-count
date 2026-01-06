@@ -8,7 +8,7 @@ export const handler = async (event, context) => {
   );
 
   if (logLines?.length) {
-    const filename = `actions-${+new Date()}-${context.awsRequestId}.log`;
+    const filename = `actions-${Date.now()}-${context.awsRequestId}.log`;
     // This directory must match the LocalMountPath of the function's
     // configuration
     writeFileSync(`/mnt/count_files/${filename}`, logLines.join("\n"));

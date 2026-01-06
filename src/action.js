@@ -1,5 +1,5 @@
-import { KinesisClient, PutRecordCommand } from "@aws-sdk/client-kinesis";
 import { createHash } from "node:crypto";
+import { KinesisClient, PutRecordCommand } from "@aws-sdk/client-kinesis";
 
 const kinesis = new KinesisClient({ apiVersion: "2013-12-02" });
 
@@ -51,7 +51,7 @@ function getUserId(event) {
 
   // Create a new user ID if there isn't one yet
   // The user ID is a hash of the IP and the current timestamp
-  const msg = event.requestContext.http.sourceIp + new Date().getTime();
+  const msg = event.requestContext.http.sourceIp + Date.now();
   return createHash("sha1").update(msg).digest("base64").substring(0, 27);
 }
 
@@ -67,11 +67,7 @@ function getSessionId(event, userId) {
 
   // Create a new session ID if there isn't one yet
   // The session ID is a hash of the user ID, current timestamp, and IP
-  const msg = [
-    userId,
-    new Date().getTime(),
-    event.requestContext.http.sourceIp,
-  ].join("");
+  const msg = [userId, Date.now(), event.requestContext.http.sourceIp].join("");
   return createHash("sha1").update(msg).digest("base64").substring(0, 27);
 }
 
